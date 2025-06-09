@@ -1,20 +1,43 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-title [@titleAnim]>Home</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-text>Bienvenido, {{ usuario }}</ion-text>
+  <form [formGroup]="infoForm">
+    <ion-item>
+      <ion-label position="floating">Nombre</ion-label>
+      <ion-input formControlName="nombre" [@shake]="shakeState"></ion-input>
+    </ion-item>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+    <ion-item>
+      <ion-label position="floating">Apellido</ion-label>
+      <ion-input formControlName="apellido" [@shake]="shakeState"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Nivel de educación</ion-label>
+      <ion-select formControlName="educacion">
+        <ion-select-option value="básico">Básico</ion-select-option>
+        <ion-select-option value="medio">Medio</ion-select-option>
+        <ion-select-option value="terciario">Terciario</ion-select-option>
+        <ion-select-option value="universitario">Universitario</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Angular Material Datepicker -->
+    <div style="padding: 16px;">
+      <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Fecha de nacimiento</mat-label>
+        <input matInput [matDatepicker]="picker" placeholder="Selecciona una fecha" formControlName="fechaNacimiento">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <ion-button expand="block" (click)="limpiar()">Limpiar</ion-button>
+    <ion-button expand="block" (click)="mostrar()">Mostrar</ion-button>
+  </form>
 </ion-content>

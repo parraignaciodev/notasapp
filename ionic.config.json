@@ -1,5 +1,5 @@
 {
-  "name": "MyApp",
+  "name": "skeletonapp",
   "integrations": {
     "capacitor": {}
   },
