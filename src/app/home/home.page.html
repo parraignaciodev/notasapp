@@ -1,43 +1,52 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title [@titleAnim]>Home</ion-title>
+    <ion-title>Mis Tareas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" color="danger" (click)="cerrarSesion()">Cerrar sesión</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar color="light">
+    <ion-title size="small">Hola, {{ nombreUsuario }} 👋</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-text>Bienvenido, {{ usuario }}</ion-text>
-  <form [formGroup]="infoForm">
-    <ion-item>
-      <ion-label position="floating">Nombre</ion-label>
-      <ion-input formControlName="nombre" [@shake]="shakeState"></ion-input>
+<ion-content class="ion-padding">
+  <ion-list *ngIf="tareas.length > 0; else sinTareas">
+    <ion-item
+      *ngFor="let tarea of tareas"
+      button
+      (click)="verDetalle(tarea)"
+      class="tarea-item"
+    >
+      <ion-label>
+        <h2>
+          {{ tarea.titulo }}
+          <ion-chip
+            color="{{ tarea.completada ? 'success' : 'warning' }}"
+            class="estado-chip"
+          >
+            <ion-label>
+              {{ tarea.completada ? 'Completada' : 'Pendiente' }}
+            </ion-label>
+          </ion-chip>
+        </h2>
+        <p>{{ tarea.descripcion }}</p>
+      </ion-label>
     </ion-item>
+  </ion-list>
 
-    <ion-item>
-      <ion-label position="floating">Apellido</ion-label>
-      <ion-input formControlName="apellido" [@shake]="shakeState"></ion-input>
-    </ion-item>
+  <ng-template #sinTareas>
+    <ion-text color="medium">
+      <p class="ion-padding sin-tareas">No tienes tareas aún.</p>
+    </ion-text>
+  </ng-template>
 
-    <ion-item>
-      <ion-label>Nivel de educación</ion-label>
-      <ion-select formControlName="educacion">
-        <ion-select-option value="básico">Básico</ion-select-option>
-        <ion-select-option value="medio">Medio</ion-select-option>
-        <ion-select-option value="terciario">Terciario</ion-select-option>
-        <ion-select-option value="universitario">Universitario</ion-select-option>
-      </ion-select>
-    </ion-item>
-
-    <!-- Angular Material Datepicker -->
-    <div style="padding: 16px;">
-      <mat-form-field appearance="fill" style="width: 100%;">
-        <mat-label>Fecha de nacimiento</mat-label>
-        <input matInput [matDatepicker]="picker" placeholder="Selecciona una fecha" formControlName="fechaNacimiento">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-    </div>
-
-    <ion-button expand="block" (click)="limpiar()">Limpiar</ion-button>
-    <ion-button expand="block" (click)="mostrar()">Mostrar</ion-button>
-  </form>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary" (click)="irAgregar()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
+
+
+

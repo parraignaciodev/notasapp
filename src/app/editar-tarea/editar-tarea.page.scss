@@ -1,0 +1,30 @@
+.formulario-edicion {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+ion-item {
+  --highlight-color-focused: var(--ion-color-primary);
+}
+
+ion-textarea,
+ion-input {
+  font-size: 1rem;
+}
+
+ion-text {
+  margin-left: 12px;
+  font-size: 0.8rem;
+}
+
+.boton-guardar {
+  margin-top: 24px;
+}
+
+small {
+  display: block;
+  margin-left: 12px;
+  margin-top: 4px;
+  font-size: 0.75rem;
+}

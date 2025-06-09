@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Detalle de la Tarea</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div *ngIf="tarea; else noEncontrada" class="detalle-container">
+    <h2 class="titulo-tarea">{{ tarea.titulo }}</h2>
+    <p class="descripcion-tarea">{{ tarea.descripcion }}</p>
+
+    <ion-chip
+      [color]="tarea.completada ? 'success' : 'warning'"
+      class="estado-chip"
+    >
+      <ion-label>
+        {{ tarea.completada ? 'Completada' : 'Pendiente' }}
+      </ion-label>
+    </ion-chip>
+
+    <ion-button
+      expand="block"
+      fill="outline"
+      color="medium"
+      (click)="toggleEstado()"
+    >
+      {{ tarea.completada ? 'Marcar como Pendiente' : 'Marcar como Completada' }}
+    </ion-button>
+
+    <ion-button expand="block" color="primary" (click)="editar()">
+      Editar
+    </ion-button>
+
+    <ion-button expand="block" color="danger" (click)="eliminar()">
+      Eliminar
+    </ion-button>
+
+    <ion-button expand="block" fill="clear" color="dark" (click)="volver()">
+      Volver
+    </ion-button>
+  </div>
+
+  <ng-template #noEncontrada>
+    <ion-text color="medium">
+      <p class="sin-tarea">No se encontró la tarea.</p>
+    </ion-text>
+  </ng-template>
+</ion-content>
+
+
+

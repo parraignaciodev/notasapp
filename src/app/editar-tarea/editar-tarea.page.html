@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Editar Tarea</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="tareaForm" (ngSubmit)="guardar()" class="formulario-edicion">
+    <ion-item>
+      <ion-label position="floating">Título</ion-label>
+      <ion-input formControlName="titulo" type="text"></ion-input>
+    </ion-item>
+    <ion-text color="danger" *ngIf="tareaForm.controls['titulo'].invalid && tareaForm.controls['titulo'].touched">
+      <small>El título es requerido y debe tener al menos 3 caracteres.</small>
+    </ion-text>
+
+    <ion-item>
+      <ion-label position="floating">Descripción</ion-label>
+      <ion-textarea formControlName="descripcion" auto-grow="true"></ion-textarea>
+    </ion-item>
+    <ion-text color="danger" *ngIf="tareaForm.controls['descripcion'].invalid && tareaForm.controls['descripcion'].touched">
+      <small>La descripción es requerida y debe tener al menos 5 caracteres.</small>
+    </ion-text>
+
+    <ion-button
+      expand="block"
+      type="submit"
+      [disabled]="tareaForm.invalid"
+      color="primary"
+      class="boton-guardar"
+    >
+      Guardar cambios
+    </ion-button>
+  </form>
+</ion-content>

@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Agregar Tarea</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="tareaForm" class="ion-padding">
+
+    
+    <ion-item>
+      <ion-label position="floating">Título</ion-label>
+      <ion-input formControlName="titulo"></ion-input>
+    </ion-item>
+    <ion-note
+      *ngIf="tareaForm.get('titulo')?.touched && tareaForm.get('titulo')?.['errors']"
+      color="danger"
+      class="ion-padding-start">
+      <ng-container *ngIf="tareaForm.get('titulo')?.errors?.['required']">El título es obligatorio.</ng-container>
+      <ng-container *ngIf="tareaForm.get('titulo')?.errors?.['minlength']">
+        El título debe tener al menos 3 caracteres.
+      </ng-container>
+      <ng-container *ngIf="tareaForm.get('titulo')?.errors?.['soloEspacios']">
+        El título no puede contener solo espacios.
+      </ng-container>
+    </ion-note>
+
+    
+    <ion-item>
+      <ion-label position="floating">Descripción</ion-label>
+      <ion-textarea formControlName="descripcion"></ion-textarea>
+    </ion-item>
+    <ion-note
+      *ngIf="tareaForm.get('descripcion')?.touched && tareaForm.get('descripcion')?.['errors']"
+      color="danger"
+      class="ion-padding-start">
+      <ng-container *ngIf="tareaForm.get('titulo')?.errors?.['required']">La descripción es obligatoria.</ng-container>
+      <ng-container *ngIf="tareaForm.get('descripcion')?.errors?.['minlength']">
+        La descripción debe tener al menos 5 caracteres.
+      </ng-container>
+      <ng-container *ngIf="tareaForm.get('descripcion')?.errors?.['soloEspacios']">
+        La descripción no puede contener solo espacios.
+      </ng-container>
+    </ion-note>
+
+    
+    <ion-button expand="block" (click)="guardar()" [disabled]="tareaForm.invalid">
+      Guardar
+    </ion-button>
+
+  </form>
+</ion-content>
+
+

@@ -1,18 +1,30 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>login</ion-title>
+    <ion-title class="app-title">SkeletonAPP</ion-title>
   </ion-toolbar>
-<ion-header><ion-toolbar><ion-title>Login</ion-title></ion-toolbar></ion-header>
-<ion-content>
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <ion-item>
-      <ion-label position="floating">Usuario</ion-label>
-      <ion-input formControlName="usuario"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Contraseña</ion-label>
-      <ion-input type="password" formControlName="clave"></ion-input>
-    </ion-item>
-    <ion-button expand="block" type="submit">Ingresar</ion-button>
-  </form>
+</ion-header>
+
+<ion-content fullscreen class="login-content">
+  <div class="login-container">
+    <h1 class="login-title">¡Bienvenido!</h1>
+    <p class="subtitle">Aquí comienza todo</p>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <ion-item>
+        <ion-label position="floating">Usuario</ion-label>
+        <ion-input formControlName="usuario"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input type="password" formControlName="clave"></ion-input>
+      </ion-item>
+      <ion-button expand="block" type="submit" class="btn-login">Ingresar</ion-button>
+    </form>
+
+    <p class="create-account">
+      ¿No tienes cuenta? <a routerLink="/register">Crea tu cuenta gratis</a>
+    </p>
+  </div>
 </ion-content>
+
+
