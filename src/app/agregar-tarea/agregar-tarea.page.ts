@@ -4,22 +4,24 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, Validators, AbstractCont
 import { IonicModule, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 
+type NoteColorKey = 'sun' | 'sky' | 'mint' | 'lavender' | 'peach' | 'gray';
+
 @Component({
   selector: 'app-agregar-tarea',
   standalone: true,
   templateUrl: './agregar-tarea.page.html',
   styleUrls: ['./agregar-tarea.page.scss'],
-  imports: [
-    CommonModule,
-    IonicModule,
-    FormsModule,
-    ReactiveFormsModule
-  ]
+  imports: [CommonModule, IonicModule, FormsModule, ReactiveFormsModule]
 })
 export class AgregarTareaPage {
+  // Paleta disponible (horizontal en la vista)
+  palette: NoteColorKey[] = ['sun', 'sky', 'mint', 'lavender', 'peach', 'gray'];
+
+  // Form con tus validaciones + campo color
   tareaForm = this.fb.group({
     titulo: ['', [Validators.required, Validators.minLength(3), this.noSoloEspacios]],
-    descripcion: ['', [Validators.required, Validators.minLength(5), this.noSoloEspacios]]
+    descripcion: ['', [Validators.required, Validators.minLength(5), this.noSoloEspacios]],
+    color: ['sun' as NoteColorKey]   // valor por defecto
   });
 
   constructor(
@@ -28,23 +30,37 @@ export class AgregarTareaPage {
     private toastCtrl: ToastController
   ) {}
 
+  // Validador original (se mantiene)
   noSoloEspacios(control: AbstractControl) {
     const value = control.value || '';
     return value.trim().length === 0 ? { soloEspacios: true } : null;
   }
 
+  // Cambiar color desde la UI
+  setColor(c: NoteColorKey) {
+    this.tareaForm.patchValue({ color: c });
+  }
+
+  // Guardar nota manteniendo tu flujo (toast + navegar a /home)
   async guardar() {
     if (this.tareaForm.invalid) {
       this.tareaForm.markAllAsTouched();
       return;
     }
 
+    const tareasGuardadas: any[] = JSON.parse(localStorage.getItem('tareas') || '[]');
+
+    const now = new Date().toISOString();
     const nuevaTarea = {
-      id: Date.now(),
-      ...this.tareaForm.value
+      id: Date.now(), // se conserva tu forma de generar id
+      titulo: this.tareaForm.value.titulo,
+      descripcion: this.tareaForm.value.descripcion,
+      color: this.tareaForm.value.color, // nuevo campo
+      completada: false,
+      createdAt: now,
+      updatedAt: now
     };
 
-    const tareasGuardadas = JSON.parse(localStorage.getItem('tareas') || '[]');
     tareasGuardadas.push(nuevaTarea);
     localStorage.setItem('tareas', JSON.stringify(tareasGuardadas));
 
@@ -53,11 +69,11 @@ export class AgregarTareaPage {
       duration: 2000,
       color: 'success'
     });
-
     await toast.present();
 
-    // ✅ Redirigir al home después de guardar
+    // ✅ Se mantiene tu redirección original
     this.router.navigate(['/home']);
   }
 }
+
 

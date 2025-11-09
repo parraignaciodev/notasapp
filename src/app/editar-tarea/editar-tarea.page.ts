@@ -4,16 +4,19 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, ReactiveFormsModul
 import { IonicModule, ToastController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 
+type NoteColorKey = 'sun' | 'sky' | 'mint' | 'lavender' | 'peach' | 'gray';
+
 @Component({
   selector: 'app-editar-tarea',
-  templateUrl: './editar-tarea.page.html',
-  styleUrls: ['./editar-tarea.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, ReactiveFormsModule]
+  imports: [CommonModule, IonicModule, ReactiveFormsModule],
+  templateUrl: './editar-tarea.page.html',
+  styleUrls: ['./editar-tarea.page.scss']
 })
 export class EditarTareaPage implements OnInit {
   tareaForm!: FormGroup;
   tareaId!: number;
+  palette: NoteColorKey[] = ['sun', 'sky', 'mint', 'lavender', 'peach', 'gray'];
 
   constructor(
     private fb: FormBuilder,
@@ -25,11 +28,12 @@ export class EditarTareaPage implements OnInit {
   ngOnInit() {
     this.tareaForm = this.fb.group({
       titulo: ['', [Validators.required, Validators.minLength(3), this.noSoloEspacios]],
-      descripcion: ['', [Validators.required, Validators.minLength(5), this.noSoloEspacios]]
+      descripcion: ['', [Validators.required, Validators.minLength(5), this.noSoloEspacios]],
+      color: ['sun' as NoteColorKey]
     });
 
     this.tareaId = Number(this.route.snapshot.paramMap.get('id'));
-    const tareasGuardadas = JSON.parse(localStorage.getItem('tareas') || '[]');
+    const tareasGuardadas: any[] = JSON.parse(localStorage.getItem('tareas') || '[]');
     const tarea = tareasGuardadas.find((t: any) => t.id === this.tareaId);
 
     if (!tarea) {
@@ -38,10 +42,10 @@ export class EditarTareaPage implements OnInit {
       return;
     }
 
-    // Prellenar formulario
     this.tareaForm.patchValue({
       titulo: tarea.titulo,
-      descripcion: tarea.descripcion
+      descripcion: tarea.descripcion,
+      color: (tarea.color as NoteColorKey) || 'sun'
     });
   }
 
@@ -50,13 +54,27 @@ export class EditarTareaPage implements OnInit {
     return value.trim().length === 0 ? { soloEspacios: true } : null;
   }
 
+  // Actualiza el color al instante y persiste en localStorage
+  async setColor(c: NoteColorKey) {
+    this.tareaForm.patchValue({ color: c });
+
+    const tareas: any[] = JSON.parse(localStorage.getItem('tareas') || '[]');
+    const i = tareas.findIndex((t: any) => t.id === this.tareaId);
+    if (i === -1) return;
+
+    tareas[i] = { ...tareas[i], color: c, updatedAt: new Date().toISOString() };
+    localStorage.setItem('tareas', JSON.stringify(tareas));
+
+    (await this.toastCtrl.create({ message: 'Color actualizado', duration: 900 })).present();
+  }
+
   async guardar() {
     if (this.tareaForm.invalid) {
       this.tareaForm.markAllAsTouched();
       return;
     }
 
-    const tareasGuardadas = JSON.parse(localStorage.getItem('tareas') || '[]');
+    const tareasGuardadas: any[] = JSON.parse(localStorage.getItem('tareas') || '[]');
     const index = tareasGuardadas.findIndex((t: any) => t.id === this.tareaId);
 
     if (index === -1) {
@@ -64,11 +82,12 @@ export class EditarTareaPage implements OnInit {
       return;
     }
 
-    // Actualizar tarea
     tareasGuardadas[index] = {
       ...tareasGuardadas[index],
       titulo: this.tareaForm.value.titulo,
-      descripcion: this.tareaForm.value.descripcion
+      descripcion: this.tareaForm.value.descripcion,
+      color: this.tareaForm.value.color, // por si cambió y no alcanzó a persistir
+      updatedAt: new Date().toISOString(),
     };
 
     localStorage.setItem('tareas', JSON.stringify(tareasGuardadas));
@@ -76,13 +95,9 @@ export class EditarTareaPage implements OnInit {
     this.router.navigate(['/detalle-tarea', this.tareaId]);
   }
 
-  async mostrarToast(mensaje: string, color: string) {
-    const toast = await this.toastCtrl.create({
-      message: mensaje,
-      duration: 2000,
-      color
-    });
-    await toast.present();
+  async mostrarToast(message: string, color: string = 'dark') {
+    (await this.toastCtrl.create({ message, duration: 1500, color })).present();
   }
 }
+
 

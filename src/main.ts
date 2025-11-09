@@ -5,6 +5,9 @@ import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalo
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 
+import { addIcons } from 'ionicons';
+import { add, trash, create, checkmark } from 'ionicons/icons';
+
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
@@ -12,3 +15,4 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes, withPreloading(PreloadAllModules)),
   ],
 });
+addIcons({ add, trash, create, checkmark }); 

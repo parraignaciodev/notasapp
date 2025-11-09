@@ -10,20 +10,40 @@
 
     <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
 
+      <!-- USUARIO -->
       <ion-item>
         <ion-label position="floating">Usuario</ion-label>
         <ion-input formControlName="usuario"></ion-input>
       </ion-item>
+
       <ion-text color="danger" *ngIf="registerForm.get('usuario')?.touched && registerForm.get('usuario')?.invalid">
-        <p class="ion-padding-start">El usuario es requerido.</p>
+        <ion-note *ngIf="registerForm.get('usuario')?.hasError('required')">
+          El usuario es requerido.
+        </ion-note>
+        <ion-note *ngIf="registerForm.get('usuario')?.hasError('minlength')">
+          Debe tener al menos 3 caracteres.
+        </ion-note>
+        <ion-note *ngIf="registerForm.get('usuario')?.hasError('maxlength')">
+          No puede superar los 16 caracteres.
+        </ion-note>
+        <ion-note *ngIf="registerForm.get('usuario')?.hasError('pattern')">
+          Solo se permiten letras, números y los símbolos . _ -
+        </ion-note>
       </ion-text>
 
+      <!-- CONTRASEÑA -->
       <ion-item>
         <ion-label position="floating">Contraseña</ion-label>
         <ion-input type="password" formControlName="clave"></ion-input>
       </ion-item>
+
       <ion-text color="danger" *ngIf="registerForm.get('clave')?.touched && registerForm.get('clave')?.invalid">
-        <p class="ion-padding-start">La contraseña es requerida.</p>
+        <ion-note *ngIf="registerForm.get('clave')?.hasError('required')">
+          La contraseña es requerida.
+        </ion-note>
+        <ion-note *ngIf="registerForm.get('clave')?.hasError('pattern')">
+          Debe tener mínimo 8 caracteres, incluir una mayúscula, una minúscula, un número y un símbolo.
+        </ion-note>
       </ion-text>
 
       <ion-button expand="block" type="submit" class="btn-register">Crear Cuenta</ion-button>

@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title class="app-title">SkeletonAPP</ion-title>
+    <ion-title class="app-title">apunta!</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -10,19 +10,48 @@
     <p class="subtitle">Aquí comienza todo</p>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      
+      <!-- USUARIO -->
       <ion-item>
         <ion-label position="floating">Usuario</ion-label>
         <ion-input formControlName="usuario"></ion-input>
       </ion-item>
+
+      <ion-text color="danger" *ngIf="loginForm.get('usuario')?.touched && loginForm.get('usuario')?.invalid">
+        <ion-note *ngIf="loginForm.get('usuario')?.hasError('required')">
+          El usuario es requerido.
+        </ion-note>
+        <ion-note *ngIf="loginForm.get('usuario')?.hasError('minlength')">
+          Debe tener al menos 3 caracteres.
+        </ion-note>
+        <ion-note *ngIf="loginForm.get('usuario')?.hasError('maxlength')">
+          No puede superar los 16 caracteres.
+        </ion-note>
+        <ion-note *ngIf="loginForm.get('usuario')?.hasError('pattern')">
+          Solo se permiten letras, números y los símbolos . _ -
+        </ion-note>
+      </ion-text>
+
+      <!-- CONTRASEÑA -->
       <ion-item>
         <ion-label position="floating">Contraseña</ion-label>
         <ion-input type="password" formControlName="clave"></ion-input>
       </ion-item>
+
+      <ion-text color="danger" *ngIf="loginForm.get('clave')?.touched && loginForm.get('clave')?.invalid">
+        <ion-note *ngIf="loginForm.get('clave')?.hasError('required')">
+          La contraseña es requerida.
+        </ion-note>
+        <ion-note *ngIf="loginForm.get('clave')?.hasError('pattern')">
+          Debe tener mínimo 8 caracteres, incluir una mayúscula, una minúscula, un número y un símbolo.
+        </ion-note>
+      </ion-text>
+
       <ion-button expand="block" type="submit" class="btn-login">Ingresar</ion-button>
     </form>
 
     <p class="create-account">
-      ¿No tienes cuenta? <a routerLink="/register">Crea tu cuenta gratis</a>
+      <ion-button fill="clear" routerLink="/register">Crea tu cuenta gratis</ion-button>
     </p>
   </div>
 </ion-content>

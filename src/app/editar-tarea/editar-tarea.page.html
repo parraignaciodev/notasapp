@@ -22,6 +22,21 @@
       <small>La descripción es requerida y debe tener al menos 5 caracteres.</small>
     </ion-text>
 
+    <!-- Selector de color (debajo de la descripción) -->
+    <div class="color-section">
+      <ion-label class="color-label">Color de la nota</ion-label>
+      <div class="color-row">
+        <button
+          *ngFor="let c of palette"
+          type="button"
+          class="color-swatch"
+          [class.selected]="tareaForm.value.color === c"
+          (click)="setColor(c)">
+          <span [class]="'dot ' + c"></span>
+        </button>
+      </div>
+    </div>
+
     <ion-button
       expand="block"
       type="submit"

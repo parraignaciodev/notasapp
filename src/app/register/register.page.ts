@@ -22,9 +22,24 @@ export class RegisterPage {
     private authService: AuthService  // Inyectar AuthService
   ) {
     this.registerForm = this.fb.group({
-      usuario: ['', Validators.required],
-      clave: ['', Validators.required]
+      usuario: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(16),
+          Validators.pattern(/^[a-zA-Z0-9._-]{3,16}$/),
+        ],
+      ],
+      clave: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/),
+        ],
+      ],
     });
+
   }
 
   async onRegister() {

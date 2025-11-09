@@ -2,67 +2,80 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 interface Usuario {
-  nombre: string;
-  clave: string;
+  nombre: string; // almacenado normalizado (lowercase + trim)
+  clave: string;  // demo: sin hash
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
   private usuarioSubject = new BehaviorSubject<string | null>(null);
   usuario$ = this.usuarioSubject.asObservable();
 
-  private usuariosKey = 'usuarios';       // clave para la lista de usuarios
-  private usuarioActualKey = 'usuarioActual'; // clave para usuario logueado
+  private usuariosKey = 'usuarios';
+  private usuarioActualKey = 'usuarioActual';
 
   constructor() {
     this.cargarUsuarioDesdeStorage();
   }
 
-  // Registro de nuevo usuario
+  // --- utils ---
+  private norm(u: string): string {
+    return (u || '').trim().toLowerCase();
+  }
+
+  private obtenerUsuarios(): Usuario[] {
+    const usuariosStr = localStorage.getItem(this.usuariosKey);
+    try { return usuariosStr ? JSON.parse(usuariosStr) : []; }
+    catch { return []; }
+  }
+
+  private guardarUsuarios(users: Usuario[]) {
+    localStorage.setItem(this.usuariosKey, JSON.stringify(users));
+  }
+
+  // Registro
   registrarUsuario(nombre: string, clave: string): boolean {
     const usuarios = this.obtenerUsuarios();
+    const nNombre = this.norm(nombre);
 
-    // Revisar si usuario ya existe
-    if (usuarios.find(u => u.nombre === nombre)) {
-      return false; // usuario ya existe
+    if (usuarios.find(u => u.nombre === nNombre)) {
+      return false; // ya existe
     }
 
-    // Agregar nuevo usuario y guardar
-    usuarios.push({ nombre, clave });
-    localStorage.setItem(this.usuariosKey, JSON.stringify(usuarios));
+    usuarios.push({ nombre: nNombre, clave });
+    this.guardarUsuarios(usuarios);
     return true;
   }
 
-  // Login solo recibe el nombre (usuario)
-  login(nombre: string): void {
-    this.usuarioSubject.next(nombre);
-    localStorage.setItem(this.usuarioActualKey, nombre);
+  // Validación de credenciales
+  validarUsuario(nombre: string, clave: string): boolean {
+    const nNombre = this.norm(nombre);
+    const usuarios = this.obtenerUsuarios();
+    const found = usuarios.find(u => u.nombre === nNombre);
+    return !!found && found.clave === clave;
   }
 
-  // Logout
-  logout() {
+  // Login: guarda solo el nombre normalizado
+  login(nombre: string): void {
+    const nNombre = this.norm(nombre);
+    this.usuarioSubject.next(nNombre);
+    localStorage.setItem(this.usuarioActualKey, nNombre);
+  }
+
+  logout(): void {
     this.usuarioSubject.next(null);
     localStorage.removeItem(this.usuarioActualKey);
   }
 
-  // Obtener usuario logueado al iniciar app
-  cargarUsuarioDesdeStorage() {
+  cargarUsuarioDesdeStorage(): void {
     const usuario = localStorage.getItem(this.usuarioActualKey);
     this.usuarioSubject.next(usuario);
   }
 
-  // Obtener lista de usuarios guardados
-  private obtenerUsuarios(): Usuario[] {
-    const usuariosStr = localStorage.getItem(this.usuariosKey);
-    return usuariosStr ? JSON.parse(usuariosStr) : [];
-  }
-
-  // Validar usuario y clave
-  validarUsuario(nombre: string, clave: string): boolean {
-    const usuarios = this.obtenerUsuarios();
-    return usuarios.some(u => u.nombre === nombre && u.clave === clave);
+  // util para pruebas
+  clearAll(): void {
+    localStorage.removeItem(this.usuariosKey);
+    localStorage.removeItem(this.usuarioActualKey);
   }
 }
 

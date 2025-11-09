@@ -21,8 +21,24 @@ import { AuthService } from '../services/auth.service';  // Importa tu servicio
 export class LoginPage implements OnInit {
 
   loginForm = this.fb.group({
-    usuario: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(8)]],
-    clave: ['', [Validators.required, Validators.pattern(/^\d{4}$/)]]
+    usuario: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(16),
+        // opcional: restringir a letras/números/._-
+        Validators.pattern(/^[a-zA-Z0-9._-]{3,16}$/),
+      ],
+    ],
+    clave: [
+      '',
+      [
+        Validators.required,
+        // min 8, al menos 1 minúscula, 1 mayúscula, 1 número y 1 símbolo
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/),
+      ],
+    ],
   });
 
   constructor(

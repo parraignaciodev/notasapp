@@ -6,17 +6,27 @@
 
 <ion-content class="ion-padding">
   <div *ngIf="tarea; else noEncontrada" class="detalle-container">
-    <h2 class="titulo-tarea">{{ tarea.titulo }}</h2>
-    <p class="descripcion-tarea">{{ tarea.descripcion }}</p>
 
-    <ion-chip
-      [color]="tarea.completada ? 'success' : 'warning'"
-      class="estado-chip"
+    <!-- Tarjeta coloreada -->
+    <div
+      class="note-card"
+      [style.--note-bg]="'var(--note-' + (tarea?.color || 'gray') + ')'"
     >
-      <ion-label>
+      <div class="note-header">
+        <h2 class="note-title">{{ tarea.titulo }}</h2>
+        <span class="note-date">
+          {{ (tarea.updatedAt || tarea.createdAt) | date:'MMM d, HH:mm':'es-CL' }}
+        </span>
+      </div>
+
+      <p class="note-desc">{{ tarea.descripcion }}</p>
+
+      <!-- Estado dentro de la tarjeta (opcional). Si prefieres, deja solo el ion-chip de abajo -->
+      <div class="note-status" [class.done]="tarea.completada">
         {{ tarea.completada ? 'Completada' : 'Pendiente' }}
-      </ion-label>
-    </ion-chip>
+      </div>
+    </div>
+
 
     <ion-button
       expand="block"
@@ -27,12 +37,12 @@
       {{ tarea.completada ? 'Marcar como Pendiente' : 'Marcar como Completada' }}
     </ion-button>
 
-    <ion-button expand="block" color="primary" (click)="editar()">
+    <ion-button expand="block" color="medium" (click)="editar()">
       Editar
     </ion-button>
 
-    <ion-button expand="block" color="danger" (click)="eliminar()">
-      Eliminar
+    <ion-button expand="block" color="medium" (click)="eliminar()">
+      <ion-icon name="trash"></ion-icon>
     </ion-button>
 
     <ion-button expand="block" fill="clear" color="dark" (click)="volver()">
@@ -46,6 +56,7 @@
     </ion-text>
   </ng-template>
 </ion-content>
+
 
 
 
