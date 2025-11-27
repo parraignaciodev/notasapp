@@ -1,69 +1,59 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Agregar Tarea</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar class="glass-header">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" color="primary" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="main-title">Nueva Nota</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <form [formGroup]="tareaForm" class="ion-padding">
+<ion-content class="ion-padding form-content">
+  <form [formGroup]="tareaForm" class="custom-form animate-entry">
 
     <!-- Campo: Título -->
-    <ion-item>
-      <ion-label position="floating">Título</ion-label>
-      <ion-input formControlName="titulo"></ion-input>
-    </ion-item>
-    <ion-note
-      *ngIf="tareaForm.get('titulo')?.touched && tareaForm.get('titulo')?.errors"
-      color="danger"
-      class="ion-padding-start">
-      <ng-container *ngIf="tareaForm.get('titulo')?.errors?.['required']">El título es obligatorio.</ng-container>
-      <ng-container *ngIf="tareaForm.get('titulo')?.errors?.['minlength']">
-        El título debe tener al menos 3 caracteres.
-      </ng-container>
-      <ng-container *ngIf="tareaForm.get('titulo')?.errors?.['soloEspacios']">
-        El título no puede contener solo espacios.
-      </ng-container>
-    </ion-note>
+    <div class="input-group">
+      <ion-label class="input-label">Título</ion-label>
+      <ion-item lines="none" class="custom-input">
+        <ion-input formControlName="titulo" placeholder="Escribe un título..."></ion-input>
+      </ion-item>
+      <div class="error-msg" *ngIf="tareaForm.get('titulo')?.touched && tareaForm.get('titulo')?.errors">
+        <span *ngIf="tareaForm.get('titulo')?.errors?.['required']">El título es obligatorio.</span>
+        <span *ngIf="tareaForm.get('titulo')?.errors?.['minlength']">Mínimo 3 caracteres.</span>
+        <span *ngIf="tareaForm.get('titulo')?.errors?.['soloEspacios']">No puede ser solo espacios.</span>
+      </div>
+    </div>
 
     <!-- Campo: Descripción -->
-    <ion-item>
-      <ion-label position="floating">Descripción</ion-label>
-      <ion-textarea formControlName="descripcion"></ion-textarea>
-    </ion-item>
-    <ion-note
-      *ngIf="tareaForm.get('descripcion')?.touched && tareaForm.get('descripcion')?.errors"
-      color="danger"
-      class="ion-padding-start">
-      <ng-container *ngIf="tareaForm.get('descripcion')?.errors?.['required']">La descripción es obligatoria.</ng-container>
-      <ng-container *ngIf="tareaForm.get('descripcion')?.errors?.['minlength']">
-        La descripción debe tener al menos 5 caracteres.
-      </ng-container>
-      <ng-container *ngIf="tareaForm.get('descripcion')?.errors?.['soloEspacios']">
-        La descripción no puede contener solo espacios.
-      </ng-container>
-    </ion-note>
+    <div class="input-group">
+      <ion-label class="input-label">Descripción</ion-label>
+      <ion-item lines="none" class="custom-input textarea-input">
+        <ion-textarea formControlName="descripcion" rows="6" placeholder="Escribe los detalles..."></ion-textarea>
+      </ion-item>
+      <div class="error-msg" *ngIf="tareaForm.get('descripcion')?.touched && tareaForm.get('descripcion')?.errors">
+        <span *ngIf="tareaForm.get('descripcion')?.errors?.['required']">La descripción es obligatoria.</span>
+        <span *ngIf="tareaForm.get('descripcion')?.errors?.['minlength']">Mínimo 5 caracteres.</span>
+        <span *ngIf="tareaForm.get('descripcion')?.errors?.['soloEspacios']">No puede ser solo espacios.</span>
+      </div>
+    </div>
 
     <!-- 🟡 Selector de color -->
     <div class="color-section">
-      <ion-label class="color-label">Color de la nota</ion-label>
+      <ion-label class="input-label">Color de etiqueta</ion-label>
       <div class="color-row">
-        <button
-          *ngFor="let c of palette"
-          type="button"
-          class="color-swatch"
-          [class.selected]="tareaForm.value.color === c"
-          (click)="setColor(c)">
+        <button *ngFor="let c of palette" type="button" class="color-swatch"
+          [class.selected]="tareaForm.value.color === c" (click)="setColor(c)">
           <span [class]="'dot ' + c"></span>
+          <ion-icon name="checkmark" *ngIf="tareaForm.value.color === c"></ion-icon>
         </button>
       </div>
     </div>
 
     <!-- Botón guardar -->
-    <ion-button expand="block" (click)="guardar()" [disabled]="tareaForm.invalid">
-      Guardar
-    </ion-button>
+    <div class="actions">
+      <ion-button expand="block" (click)="guardar()" [disabled]="tareaForm.invalid" class="save-btn">
+        Guardar Nota
+      </ion-button>
+    </div>
 
   </form>
 </ion-content>
-
-

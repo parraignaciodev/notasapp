@@ -1,62 +1,56 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Detalle de la Tarea</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar class="glass-header">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" color="primary" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="editar()" color="primary" style="font-weight: 600;">
+        Editar
+      </ion-button>
+      <ion-button (click)="eliminar()" color="danger" style="font-weight: 600;">
+        Eliminar
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <div *ngIf="tarea; else noEncontrada" class="detalle-container">
+<ion-content class="ion-padding detail-content">
+  <div *ngIf="tarea; else noEncontrada" class="detail-container animate-entry">
 
-    <!-- Tarjeta coloreada -->
-    <div
-      class="note-card"
-      [style.--note-bg]="'var(--note-' + (tarea?.color || 'gray') + ')'"
-    >
-      <div class="note-header">
-        <h2 class="note-title">{{ tarea.titulo }}</h2>
-        <span class="note-date">
-          {{ (tarea.updatedAt || tarea.createdAt) | date:'MMM d, HH:mm':'es-CL' }}
-        </span>
+    <div class="note-detail-card" [style.--note-bg]="'var(--note-' + (tarea?.color || 'gray') + ')'">
+      <div class="detail-header">
+        <h1 class="detail-title">{{ tarea.titulo }}</h1>
+        <div class="detail-meta">
+          <span class="date">
+            <ion-icon name="calendar-outline"></ion-icon>
+            {{ (tarea.updatedAt || tarea.createdAt) | date:'d MMM yyyy, HH:mm' }}
+          </span>
+          <span class="status-badge" [class.done]="tarea.completada">
+            {{ tarea.completada ? 'Completada' : 'Pendiente' }}
+          </span>
+        </div>
       </div>
 
-      <p class="note-desc">{{ tarea.descripcion }}</p>
-
-      <!-- Estado dentro de la tarjeta (opcional). Si prefieres, deja solo el ion-chip de abajo -->
-      <div class="note-status" [class.done]="tarea.completada">
-        {{ tarea.completada ? 'Completada' : 'Pendiente' }}
+      <div class="detail-body">
+        <p class="description">{{ tarea.descripcion }}</p>
       </div>
     </div>
 
+    <div class="actions-container">
+      <ion-button expand="block" [color]="tarea.completada ? 'medium' : 'success'" class="action-btn"
+        (click)="toggleEstado()">
+        <ion-icon [name]="tarea.completada ? 'arrow-undo' : 'checkmark-circle'" slot="start"></ion-icon>
+        {{ tarea.completada ? 'Marcar como Pendiente' : 'Marcar como Completada' }}
+      </ion-button>
+    </div>
 
-    <ion-button
-      expand="block"
-      fill="outline"
-      color="medium"
-      (click)="toggleEstado()"
-    >
-      {{ tarea.completada ? 'Marcar como Pendiente' : 'Marcar como Completada' }}
-    </ion-button>
-
-    <ion-button expand="block" color="medium" (click)="editar()">
-      Editar
-    </ion-button>
-
-    <ion-button expand="block" color="medium" (click)="eliminar()">
-      <ion-icon name="trash"></ion-icon>
-    </ion-button>
-
-    <ion-button expand="block" fill="clear" color="dark" (click)="volver()">
-      Volver
-    </ion-button>
   </div>
 
   <ng-template #noEncontrada>
-    <ion-text color="medium">
-      <p class="sin-tarea">No se encontró la tarea.</p>
-    </ion-text>
+    <div class="empty-state">
+      <ion-icon name="alert-circle-outline" color="medium"></ion-icon>
+      <p>No se encontró la tarea.</p>
+      <ion-button fill="clear" (click)="volver()">Volver al inicio</ion-button>
+    </div>
   </ng-template>
 </ion-content>
-
-
-
-

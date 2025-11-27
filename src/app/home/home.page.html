@@ -1,60 +1,65 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Mis Tareas</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar class="glass-header">
+    <ion-title size="large" class="main-title">Mis Notas</ion-title>
     <ion-buttons slot="end">
-      <ion-button fill="clear" color="danger" (click)="cerrarSesion()">Cerrar sesión</ion-button>
+      <ion-button (click)="cerrarSesion()" color="primary" style="font-weight: 600;">
+        Salir
+      </ion-button>
     </ion-buttons>
-  </ion-toolbar>
-  <ion-toolbar color="light">
-    <ion-title size="small">Hola, {{ nombreUsuario }} 👋</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen class="ion-padding home">
+<ion-content fullscreen class="ion-padding home-content">
+
+  <div class="welcome-section animate-entry">
+    <h1 class="greeting">Hola, <span class="username">{{ nombreUsuario }}</span> 👋</h1>
+    <p class="subtitle">¿Qué tienes en mente hoy?</p>
+  </div>
+
   <!-- Buscador -->
-  <ion-searchbar
-    placeholder="Buscar"
-    [(ngModel)]="query"
-    class="search"
-    debounce="150"
-    showCancelButton="never">
-  </ion-searchbar>
+  <div class="search-container animate-entry" style="animation-delay: 0.1s;">
+    <ion-searchbar placeholder="Buscar en tus notas..." [(ngModel)]="query" class="custom-search" debounce="150"
+      showCancelButton="focus">
+    </ion-searchbar>
+  </div>
 
   <!-- Lista de notas -->
-  <div *ngIf="tareasFiltradas.length > 0; else sinTareas" class="notes-list">
-    <div
-      *ngFor="let tarea of tareasFiltradas"
-      class="note-card"
-      [style.--note-bg]="getNoteBg(tarea.color)"
-      (click)="verDetalle(tarea)">
+  <div *ngIf="tareasFiltradas.length > 0; else sinTareas" class="notes-grid animate-entry"
+    style="animation-delay: 0.2s;">
+    <div *ngFor="let tarea of tareasFiltradas" class="note-card custom-card"
+      [style.--note-color]="getNoteBg(tarea.color)" (click)="verDetalle(tarea)">
 
-      <div class="note-header">
-        <h2 class="note-title">{{ tarea.titulo }}</h2>
-        <span class="note-date">{{ formatFechaHora(tarea.updatedAt || tarea.createdAt) }}</span>
-      </div>
+      <div class="note-content">
+        <div class="note-header">
+          <h2 class="note-title">{{ tarea.titulo }}</h2>
+          <ion-icon *ngIf="tarea.completada" name="checkmark-circle" color="success"></ion-icon>
+        </div>
 
-      <p class="note-desc">{{ tarea.descripcion }}</p>
+        <p class="note-desc">{{ tarea.descripcion }}</p>
 
-      <div class="note-status" [class.done]="tarea.completada">
-        {{ tarea.completada ? 'Completada' : 'Pendiente' }}
+        <div class="note-footer">
+          <span class="note-date">{{ formatFechaHora(tarea.updatedAt || tarea.createdAt) }}</span>
+          <span class="status-badge" [class.done]="tarea.completada">
+            {{ tarea.completada ? 'Listo' : 'Pendiente' }}
+          </span>
+        </div>
       </div>
     </div>
   </div>
 
   <ng-template #sinTareas>
-    <ion-text color="medium">
-      <p class="ion-padding sin-tareas">No tienes tareas aún.</p>
-    </ion-text>
+    <div class="empty-state animate-entry" style="animation-delay: 0.2s;">
+      <img src="assets/icon/favicon.png" alt="No notes" class="empty-img"
+        style="opacity: 0.5; width: 80px; filter: grayscale(1);">
+      <h3>No hay nada por aquí</h3>
+      <p>Toca el botón + para crear una nota</p>
+    </div>
   </ng-template>
 
   <!-- FAB -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button class="fab-add" (click)="irAgregar()">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="custom-fab">
+    <ion-fab-button (click)="irAgregar()" color="primary">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>
-
-
-
-

@@ -23,7 +23,7 @@ export class EditarTareaPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private toastCtrl: ToastController
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.tareaForm = this.fb.group({
@@ -68,7 +68,7 @@ export class EditarTareaPage implements OnInit {
     (await this.toastCtrl.create({ message: 'Color actualizado', duration: 900 })).present();
   }
 
-  async guardar() {
+  async guardarCambios() {
     if (this.tareaForm.invalid) {
       this.tareaForm.markAllAsTouched();
       return;

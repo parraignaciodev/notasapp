@@ -1,50 +1,59 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Editar Tarea</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar class="glass-header">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" color="primary" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="main-title">Editar Nota</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <form [formGroup]="tareaForm" (ngSubmit)="guardar()" class="formulario-edicion">
-    <ion-item>
-      <ion-label position="floating">Título</ion-label>
-      <ion-input formControlName="titulo" type="text"></ion-input>
-    </ion-item>
-    <ion-text color="danger" *ngIf="tareaForm.controls['titulo'].invalid && tareaForm.controls['titulo'].touched">
-      <small>El título es requerido y debe tener al menos 3 caracteres.</small>
-    </ion-text>
+<ion-content class="ion-padding form-content">
+  <form [formGroup]="tareaForm" class="custom-form animate-entry">
 
-    <ion-item>
-      <ion-label position="floating">Descripción</ion-label>
-      <ion-textarea formControlName="descripcion" auto-grow="true"></ion-textarea>
-    </ion-item>
-    <ion-text color="danger" *ngIf="tareaForm.controls['descripcion'].invalid && tareaForm.controls['descripcion'].touched">
-      <small>La descripción es requerida y debe tener al menos 5 caracteres.</small>
-    </ion-text>
+    <!-- Campo: Título -->
+    <div class="input-group">
+      <ion-label class="input-label">Título</ion-label>
+      <ion-item lines="none" class="custom-input">
+        <ion-input formControlName="titulo" placeholder="Escribe un título..."></ion-input>
+      </ion-item>
+      <div class="error-msg" *ngIf="tareaForm.get('titulo')?.touched && tareaForm.get('titulo')?.errors">
+        <span *ngIf="tareaForm.get('titulo')?.errors?.['required']">El título es obligatorio.</span>
+        <span *ngIf="tareaForm.get('titulo')?.errors?.['minlength']">Mínimo 3 caracteres.</span>
+        <span *ngIf="tareaForm.get('titulo')?.errors?.['soloEspacios']">No puede ser solo espacios.</span>
+      </div>
+    </div>
 
-    <!-- Selector de color (debajo de la descripción) -->
+    <!-- Campo: Descripción -->
+    <div class="input-group">
+      <ion-label class="input-label">Descripción</ion-label>
+      <ion-item lines="none" class="custom-input textarea-input">
+        <ion-textarea formControlName="descripcion" rows="6" placeholder="Escribe los detalles..."></ion-textarea>
+      </ion-item>
+      <div class="error-msg" *ngIf="tareaForm.get('descripcion')?.touched && tareaForm.get('descripcion')?.errors">
+        <span *ngIf="tareaForm.get('descripcion')?.errors?.['required']">La descripción es obligatoria.</span>
+        <span *ngIf="tareaForm.get('descripcion')?.errors?.['minlength']">Mínimo 5 caracteres.</span>
+        <span *ngIf="tareaForm.get('descripcion')?.errors?.['soloEspacios']">No puede ser solo espacios.</span>
+      </div>
+    </div>
+
+    <!-- 🟡 Selector de color -->
     <div class="color-section">
-      <ion-label class="color-label">Color de la nota</ion-label>
+      <ion-label class="input-label">Color de etiqueta</ion-label>
       <div class="color-row">
-        <button
-          *ngFor="let c of palette"
-          type="button"
-          class="color-swatch"
-          [class.selected]="tareaForm.value.color === c"
-          (click)="setColor(c)">
+        <button *ngFor="let c of palette" type="button" class="color-swatch"
+          [class.selected]="tareaForm.value.color === c" (click)="setColor(c)">
           <span [class]="'dot ' + c"></span>
+          <ion-icon name="checkmark" *ngIf="tareaForm.value.color === c"></ion-icon>
         </button>
       </div>
     </div>
 
-    <ion-button
-      expand="block"
-      type="submit"
-      [disabled]="tareaForm.invalid"
-      color="primary"
-      class="boton-guardar"
-    >
-      Guardar cambios
-    </ion-button>
+    <!-- Botón guardar -->
+    <div class="actions">
+      <ion-button expand="block" (click)="guardarCambios()" [disabled]="tareaForm.invalid" class="save-btn">
+        Guardar Cambios
+      </ion-button>
+    </div>
+
   </form>
 </ion-content>
