@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
+import { SqliteService } from '../services/sqlite.service';  // 👈 NUEVO
 
 interface Tarea {
   id: number;
@@ -13,6 +14,10 @@ interface Tarea {
   createdAt?: string;   // ISO
   updatedAt?: string;   // ISO
   color?: NoteColorKey; // nombre de color
+
+  fotoData?: string;    // data URL (base64) de la foto
+  lat?: number;
+  lng?: number;
 }
 
 type NoteColorKey = 'sun' | 'sky' | 'mint' | 'lavender' | 'peach' | 'gray';
@@ -45,18 +50,33 @@ export class HomePage implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private sqlite: SqliteService         // 👈 NUEVO
   ) {}
 
   ngOnInit() {
-    this.cargarTareas();
+    this.cargarTareas();  // localStorage
     this.authService.usuario$.subscribe(usuario => {
       this.nombreUsuario = usuario ?? '';
     });
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
+    // Seguir cargando desde localStorage como siempre
     this.cargarTareas();
+
+    // 🔍 Smoke test de SQLite SOLO en nativo (Android / iOS)
+    if (this.sqlite.isNative) {
+      try {
+        const notes = await this.sqlite.list();
+        console.log('[SQLite] Notas en tabla notes:', notes);
+      } catch (err) {
+        console.error('[SQLite] Error al listar notas', err);
+      }
+    } else {
+      // En web no hay SQLite nativo, así que no llamamos list()
+      console.log('[SQLite] Ejecutando en web, usando solo localStorage por ahora');
+    }
   }
 
   getNoteBg(color?: NoteColorKey) {
@@ -114,7 +134,12 @@ export class HomePage implements OnInit {
     const c = (t.color as NoteColorKey) ?? 'gray';
     return `note--${c}`;
   }
+
+  irApiTareas() {
+    this.router.navigate(['/api-tareas']);
+  }
 }
+
 
 
 

@@ -6,28 +6,36 @@ export const routes: Routes = [
     redirectTo: 'login',
     pathMatch: 'full',
   },
+
+  // Auth (login / register) - lazy
   {
-    path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
+    path: '',
+    loadChildren: () =>
+      import('./auth/auth.routes').then(m => m.AUTH_ROUTES),
+  },
+
+  // Notas (home + CRUD) - lazy + guard
+  {
+    path: '',
+    loadChildren: () =>
+      import('./notas/notas.routes').then(m => m.NOTAS_ROUTES),
+  },
+
+  // Página 404
+  {
+    path: 'not-found',
+    loadComponent: () =>
+      import('./not-found/not-found.page').then(m => m.NotFoundPage),
+  },
+
+  // Cualquier ruta inexistente → 404
+  {
+    path: '**',
+    redirectTo: 'not-found',
   },
   {
-    path: 'login',
-    loadComponent: () => import('./login/login.page').then( m => m.LoginPage)
-  },
-  {
-    path: 'register',
-    loadComponent: () => import('./register/register.page').then( m => m.RegisterPage)
-  },
-  {
-    path: 'agregar-tarea',
-    loadComponent: () => import('./agregar-tarea/agregar-tarea.page').then( m => m.AgregarTareaPage)
-  },
-  {
-    path: 'detalle-tarea/:id',
-    loadComponent: () => import('./detalle-tarea/detalle-tarea.page').then( m => m.DetalleTareaPage)
-  },
-  {
-    path: 'editar-tarea/:id',
-    loadComponent: () => import('./editar-tarea/editar-tarea.page').then( m => m.EditarTareaPage)
+    path: 'api-tareas',
+    loadComponent: () => import('./api-tareas/api-tareas.page').then( m => m.ApiTareasPage)
   },
 ];
+

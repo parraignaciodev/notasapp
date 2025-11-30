@@ -2,6 +2,7 @@
   <ion-toolbar class="glass-header">
     <ion-title size="large" class="main-title">Mis Notas</ion-title>
     <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="irApiTareas()">API</ion-button>
       <ion-button (click)="cerrarSesion()" color="primary" style="font-weight: 600;">
         Salir
       </ion-button>
@@ -28,6 +29,11 @@
     style="animation-delay: 0.2s;">
     <div *ngFor="let tarea of tareasFiltradas" class="note-card custom-card"
       [style.--note-color]="getNoteBg(tarea.color)" (click)="verDetalle(tarea)">
+    
+          <!-- mini preview de la foto -->
+      <div class="note-photo" *ngIf="tarea.fotoData">
+        <img [src]="tarea.fotoData" alt="Foto tarea" />
+      </div>
 
       <div class="note-content">
         <div class="note-header">

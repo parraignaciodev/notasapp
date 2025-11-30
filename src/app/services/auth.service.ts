@@ -8,6 +8,7 @@ interface Usuario {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  // observable para saber si hay usuario logueado
   private usuarioSubject = new BehaviorSubject<string | null>(null);
   usuario$ = this.usuarioSubject.asObservable();
 
@@ -19,21 +20,26 @@ export class AuthService {
   }
 
   // --- utils ---
+
   private norm(u: string): string {
     return (u || '').trim().toLowerCase();
   }
 
   private obtenerUsuarios(): Usuario[] {
     const usuariosStr = localStorage.getItem(this.usuariosKey);
-    try { return usuariosStr ? JSON.parse(usuariosStr) : []; }
-    catch { return []; }
+    try {
+      return usuariosStr ? JSON.parse(usuariosStr) : [];
+    } catch {
+      return [];
+    }
   }
 
   private guardarUsuarios(users: Usuario[]) {
     localStorage.setItem(this.usuariosKey, JSON.stringify(users));
   }
 
-  // Registro
+  // --- registro ---
+
   registrarUsuario(nombre: string, clave: string): boolean {
     const usuarios = this.obtenerUsuarios();
     const nNombre = this.norm(nombre);
@@ -47,7 +53,8 @@ export class AuthService {
     return true;
   }
 
-  // Validación de credenciales
+  // --- validación de credenciales ---
+
   validarUsuario(nombre: string, clave: string): boolean {
     const nNombre = this.norm(nombre);
     const usuarios = this.obtenerUsuarios();
@@ -55,7 +62,8 @@ export class AuthService {
     return !!found && found.clave === clave;
   }
 
-  // Login: guarda solo el nombre normalizado
+  // --- login / logout ---
+
   login(nombre: string): void {
     const nNombre = this.norm(nombre);
     this.usuarioSubject.next(nNombre);
@@ -70,6 +78,11 @@ export class AuthService {
   cargarUsuarioDesdeStorage(): void {
     const usuario = localStorage.getItem(this.usuarioActualKey);
     this.usuarioSubject.next(usuario);
+  }
+
+  // helper opcional: consulta rápida si hay usuario
+  isLoggedIn(): boolean {
+    return this.usuarioSubject.value !== null;
   }
 
   // util para pruebas

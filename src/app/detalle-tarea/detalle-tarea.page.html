@@ -15,9 +15,13 @@
 </ion-header>
 
 <ion-content class="ion-padding detail-content">
+  <!-- Verificamos si existe la tarea -->
   <div *ngIf="tarea; else noEncontrada" class="detail-container animate-entry">
 
+    <!-- Tarjeta principal con el color dinámico -->
     <div class="note-detail-card" [style.--note-bg]="'var(--note-' + (tarea?.color || 'gray') + ')'">
+      
+      <!-- Encabezado de la nota -->
       <div class="detail-header">
         <h1 class="detail-title">{{ tarea.titulo }}</h1>
         <div class="detail-meta">
@@ -31,11 +35,97 @@
         </div>
       </div>
 
+      <!-- Descripción -->
       <div class="detail-body">
         <p class="description">{{ tarea.descripcion }}</p>
       </div>
+
+      <!-- SECCIÓN FOTO (Modificada) -->
+      <div class="foto-section">
+        <div class="section-title">
+          <ion-icon name="camera-outline"></ion-icon> Foto
+        </div>
+
+        <!-- CASO 1: Si hay foto guardada (fotoData) -->
+        <div *ngIf="tarea.fotoData; else sinFoto" class="foto-wrapper animate-entry">
+          <div class="img-container">
+            <img [src]="tarea.fotoData" alt="Foto de la tarea" class="foto-tarea" />
+          </div>
+
+          <div class="foto-actions">
+            <!-- Botón Eliminar -->
+            <ion-button 
+              color="danger" 
+              fill="outline" 
+              size="small" 
+              (click)="borrarFoto()">
+              <ion-icon name="trash-outline" slot="start"></ion-icon>
+              Eliminar foto
+            </ion-button>
+            
+            <!-- Botón Cambiar (Opcional, reutiliza tomarFoto) -->
+            <ion-button 
+              color="primary" 
+              fill="clear" 
+              size="small" 
+              (click)="tomarFoto()">
+              <ion-icon name="camera-reverse-outline" slot="start"></ion-icon>
+              Cambiar
+            </ion-button>
+          </div>
+        </div>
+
+        <!-- CASO 2: Si NO hay foto -->
+        <ng-template #sinFoto>
+          <div class="empty-photo-state">
+            <p class="hint">No hay imagen adjunta.</p>
+            <ion-button expand="block" color="primary" (click)="tomarFoto()">
+              <ion-icon name="camera" slot="start"></ion-icon>
+              Tomar foto
+            </ion-button>
+          </div>
+        </ng-template>
+      </div>
+
+      <hr class="divider">
+
+      <!-- SECCIÓN UBICACIÓN -->
+      <div class="ubicacion-section">
+        <div class="section-title">
+          <ion-icon name="location-outline"></ion-icon> Ubicación
+        </div>
+        
+        <div *ngIf="tarea.lat && tarea.lng; else sinUbicacion" class="location-data">
+          <p>
+            <strong>Lat:</strong> {{ tarea.lat | number:'1.6-6' }} <br>
+            <strong>Lng:</strong> {{ tarea.lng | number:'1.6-6' }}
+          </p>
+          
+          <ion-button
+            expand="block"
+            fill="outline"
+            color="tertiary"
+            class="map-btn"
+            (click)="verEnMapa()">
+            <ion-icon name="map-outline" slot="start"></ion-icon>
+            Ver en Google Maps
+          </ion-button>
+        </div>
+
+        <ng-template #sinUbicacion>
+          <div class="empty-location-state">
+            <p class="hint">Sin ubicación guardada.</p>
+            <ion-button expand="block" color="medium" (click)="obtenerUbicacion()">
+              <ion-icon name="navigate-circle-outline" slot="start"></ion-icon>
+              Obtener ubicación
+            </ion-button>
+          </div>
+        </ng-template>
+      </div>
+
     </div>
 
+    <!-- Botón de acción principal (Completar/Pendiente) -->
     <div class="actions-container">
       <ion-button expand="block" [color]="tarea.completada ? 'medium' : 'success'" class="action-btn"
         (click)="toggleEstado()">
@@ -46,10 +136,12 @@
 
   </div>
 
+  <!-- Estado vacío si no encuentra ID -->
   <ng-template #noEncontrada>
-    <div class="empty-state">
-      <ion-icon name="alert-circle-outline" color="medium"></ion-icon>
-      <p>No se encontró la tarea.</p>
+    <div class="empty-state centered">
+      <ion-icon name="alert-circle-outline" color="medium" size="large"></ion-icon>
+      <h3>Tarea no encontrada</h3>
+      <p>Es posible que esta tarea haya sido eliminada.</p>
       <ion-button fill="clear" (click)="volver()">Volver al inicio</ion-button>
     </div>
   </ng-template>
