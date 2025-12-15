@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/not-found/not-found.page.scss"],
-  "sourcesContent": [".not-found-content {\r\n    text-align: center;\r\n\r\n    h1 {\r\n        font-size: 4rem;\r\n        margin-top: 2rem;\r\n        margin-bottom: 0.5rem;\r\n    }\r\n\r\n    p {\r\n        margin-bottom: 2rem;\r\n        color: #6b7280;\r\n    }\r\n}"],
-  "mappings": ";AAAA,CAAA;AACI,cAAA;;AAEA,CAHJ,kBAGI;AACI,aAAA;AACA,cAAA;AACA,iBAAA;;AAGJ,CATJ,kBASI;AACI,iBAAA;AACA,SAAA;;",
-  "names": []
-}
