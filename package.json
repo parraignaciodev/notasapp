@@ -9,7 +9,12 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "test:unit": "ng test --watch=false --code-coverage",
+    "test:e2e": "cypress run",
+    "test:all": "npm run test:unit && npm run test:e2e"
   },
   "private": true,
   "dependencies": {
@@ -52,8 +57,10 @@
     "@capacitor/cli": "7.3.0",
     "@ionic/angular-toolkit": "^12.0.0",
     "@types/jasmine": "~5.1.0",
+    "@types/node": "^25.0.2",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
+    "cypress": "^15.7.1",
     "eslint": "^9.16.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsdoc": "^48.2.1",
@@ -65,7 +72,11 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.8.3"
+    "protractor": "^3.3.0",
+    "puppeteer": "^24.33.0",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.8.3",
+    "webdriver-manager": "^12.1.9"
   },
   "description": "An Ionic project"
 }

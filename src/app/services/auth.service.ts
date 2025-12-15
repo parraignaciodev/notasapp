@@ -1,4 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { APP_CONFIG } from '../config/app-config.token';
+import { AppConfig } from '../config/app-config';
 import { BehaviorSubject } from 'rxjs';
 
 interface Usuario {
@@ -8,19 +10,24 @@ interface Usuario {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  // observable para saber si hay usuario logueado
   private usuarioSubject = new BehaviorSubject<string | null>(null);
   usuario$ = this.usuarioSubject.asObservable();
 
   private usuariosKey = 'usuarios';
   private usuarioActualKey = 'usuarioActual';
 
-  constructor() {
+  constructor(
+    @Optional() @Inject(APP_CONFIG) private cfg?: AppConfig
+  ) {
     this.cargarUsuarioDesdeStorage();
   }
 
-  // --- utils ---
+  // --- API config (fusionado desde ApiService) ---
+  get baseUrl(): string {
+    return this.cfg?.apiBaseUrl ?? '';
+  }
 
+  // --- utils ---
   private norm(u: string): string {
     return (u || '').trim().toLowerCase();
   }
@@ -39,22 +46,18 @@ export class AuthService {
   }
 
   // --- registro ---
-
   registrarUsuario(nombre: string, clave: string): boolean {
     const usuarios = this.obtenerUsuarios();
     const nNombre = this.norm(nombre);
 
-    if (usuarios.find(u => u.nombre === nNombre)) {
-      return false; // ya existe
-    }
+    if (usuarios.find(u => u.nombre === nNombre)) return false;
 
     usuarios.push({ nombre: nNombre, clave });
     this.guardarUsuarios(usuarios);
     return true;
   }
 
-  // --- validación de credenciales ---
-
+  // --- validación ---
   validarUsuario(nombre: string, clave: string): boolean {
     const nNombre = this.norm(nombre);
     const usuarios = this.obtenerUsuarios();
@@ -63,7 +66,6 @@ export class AuthService {
   }
 
   // --- login / logout ---
-
   login(nombre: string): void {
     const nNombre = this.norm(nombre);
     this.usuarioSubject.next(nNombre);
@@ -80,12 +82,10 @@ export class AuthService {
     this.usuarioSubject.next(usuario);
   }
 
-  // helper opcional: consulta rápida si hay usuario
   isLoggedIn(): boolean {
     return this.usuarioSubject.value !== null;
   }
 
-  // util para pruebas
   clearAll(): void {
     localStorage.removeItem(this.usuariosKey);
     localStorage.removeItem(this.usuarioActualKey);

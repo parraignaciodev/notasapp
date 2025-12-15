@@ -1,0 +1,21 @@
+# UNIT TESTS
+npm run test:unit
+
+# E2E CYPRESS
+npx cypress run
+
+# ANDROID BUILD
+ionic build
+npx cap sync android
+cd android
+.\gradlew assembleRelease
+.\gradlew bundleRelease
+
+# ZIPALIGN
+zipalign -v 4 app-release-unsigned.apk app-release-aligned.apk
+
+# SIGN
+apksigner sign --ks notasapp-release.keystore --ks-key-alias notasapp --out app-release-signed.apk app-release-aligned.apk
+
+# VERIFY
+apksigner verify --verbose app-release-signed.apk
